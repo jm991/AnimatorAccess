@@ -25,8 +25,8 @@ using Scio.CodeGeneration;
 
 namespace Scio.AnimatorAccessGenerator
 {
-	public class UnityLogger : ILogger
-	{
+	public class UnityLogger : CodeGeneration.ILogger
+    {
 		LogLevel logLevel = LogLevel.Warning;
 		public LogLevel CurrentLogLevel {
 			get { return logLevel; }

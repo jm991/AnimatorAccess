@@ -50,8 +50,8 @@ namespace Scio.AnimatorAccessGenerator
 
 		public delegate void ProcessAnimatorParameter (AnimatorParameterType t, string item, string defaultValue);
 
-		static AnimatorController GetInternalAnimatorController (Animator animator) {
-			return animator.runtimeAnimatorController as UnityEditorInternal.AnimatorController;
+		static UnityEditor.Animations.AnimatorController GetInternalAnimatorController (Animator animator) {
+			return animator.runtimeAnimatorController as UnityEditor.Animations.AnimatorController;
 		}
 
 		/// <summary>
@@ -60,17 +60,17 @@ namespace Scio.AnimatorAccessGenerator
 		/// which can be subject to changes in future releases.
 		/// </summary>
 		public static void ProcessAllAnimatorStates (Animator animator, ProcessAnimatorState callback) {
-			AnimatorController controller = GetInternalAnimatorController (animator);
-			int layerCount = controller.layerCount;
+			UnityEditor.Animations.AnimatorController controller = GetInternalAnimatorController (animator);
+			int layerCount = controller.layers.Length;
 			for (int layer = 0; layer < layerCount; layer++) {
-				string layerName = controller.GetLayer (layer).name;
-				UnityEditorInternal.StateMachine sm = controller.GetLayer (layer).stateMachine;
-				for (int i = 0; i < sm.stateCount; i++) {
-					UnityEditorInternal.State state = sm.GetState (i);
-					Motion motion = state.GetMotion ();
+				string layerName = controller.layers[layer].name;
+				UnityEditor.Animations.AnimatorStateMachine sm = controller.layers[layer].stateMachine;
+				for (int i = 0; i < sm.states.Length; i++) {
+					UnityEditor.Animations.AnimatorState state = sm.states[i].state;
+					Motion motion = state.motion;
 					float duration = (motion != null ? motion.averageDuration : 0f);
 					string motionName = (motion != null ? motion.name : "");
-					StateInfo info = new StateInfo (state.uniqueNameHash, layer, layerName, state.uniqueName, state.tag,
+					StateInfo info = new StateInfo (state.nameHash, layer, layerName, state.name, state.tag,
 						state.speed, state.iKOnFeet, state.mirror, motionName, duration);
 					callback (info);
 				}
@@ -78,28 +78,28 @@ namespace Scio.AnimatorAccessGenerator
 		}
 
 		public static void ProcessAllTransitions (Animator animator, ProcessAnimatorTransition callback) {
-			AnimatorController controller = GetInternalAnimatorController (animator);
-			int layerCount = controller.layerCount;
+			UnityEditor.Animations.AnimatorController controller = GetInternalAnimatorController (animator);
+			int layerCount = controller.layers.Length;
 			for (int layer = 0; layer < layerCount; layer++) {
-				string layerName = controller.GetLayer (layer).name;
-				UnityEditorInternal.StateMachine sm = controller.GetLayer (layer).stateMachine;
+				string layerName = controller.layers[layer].name;
+				UnityEditor.Animations.AnimatorStateMachine sm = controller.layers[layer].stateMachine;
                 		//Handle anyState cases. see UnityEditorInternal.StateMachine.transitions
 				{
-					Transition[] anyTransitions = sm.GetTransitionsFromState(null);
-					foreach (var t in anyTransitions) {
-						TransitionInfo info = new TransitionInfo (t.uniqueNameHash, t.uniqueName, layer, layerName, 
-							0, t.dstState.uniqueNameHash, t.atomic, t.duration, t.mute, t.offset, t.solo);
+                    UnityEditor.Animations.AnimatorStateTransition[] anyTransitions = sm.anyStateTransitions;
+					foreach (UnityEditor.Animations.AnimatorStateTransition t in anyTransitions) {
+						TransitionInfo info = new TransitionInfo (Animator.StringToHash(t.name), t.name, layer, layerName, 
+							0, t.destinationState.nameHash, t.hasExitTime, t.duration, t.mute, t.offset, t.solo);
 						callback (info);
 					}
 				}
-				for (int i = 0; i < sm.stateCount; i++) {
-					UnityEditorInternal.State state = sm.GetState (i);
-					Transition[] transitions = sm.GetTransitionsFromState(state);
-					foreach (var t in transitions) {
-//						Debug.Log (state.uniqueName +  ", transition: " + t.uniqueName + " ---" + " dest = " + t.dstState + " (" + (Animator.StringToHash (state.uniqueName) == Animator.StringToHash (layerName + "." + t.dstState)) + ") " + " src = " + t.srcState);
-						TransitionInfo info = new TransitionInfo (t.uniqueNameHash, t.uniqueName, layer, layerName, 
-	                        t.srcState.uniqueNameHash, t.dstState.uniqueNameHash, t.atomic, t.duration, t.mute, t.offset, t.solo);
-						callback (info);
+				for (int i = 0; i < sm.states.Length; i++) {
+					UnityEditor.Animations.AnimatorState state = sm.states[i].state;
+                    UnityEditor.Animations.AnimatorStateTransition[] transitions = state.transitions;
+					foreach (UnityEditor.Animations.AnimatorStateTransition t in transitions) {
+						Debug.Log (state.name +  ", transition: " + t.name + " ---" + " dest = " + t.destinationState.name + " (" + (Animator.StringToHash (state.name) == Animator.StringToHash (layerName + "." + t.destinationState.name)) + ") " + " src = " + state.name);
+						TransitionInfo info = new TransitionInfo (Animator.StringToHash(t.name), t.name, layer, layerName, 
+	                        state.nameHash, t.destinationState.nameHash, t.hasExitTime, t.duration, t.mute, t.offset, t.solo);
+						//callback (info);
 					}
 				}
 			}
@@ -113,19 +113,19 @@ namespace Scio.AnimatorAccessGenerator
 		/// <param name="callback">Callback delegate for processing each of the single paramters.</param>
 		public static void ProcessAnimatorParameters (Animator animator, ProcessAnimatorParameter callback)
 		{
-			AnimatorController controller = GetInternalAnimatorController (animator);
-			int countParameters = controller.parameterCount;
+			UnityEditor.Animations.AnimatorController controller = GetInternalAnimatorController (animator);
+			int countParameters = controller.parameters.Length;
 			if (countParameters > 0) {
 				for (int i = 0; i < countParameters; i++) {
-					AnimatorControllerParameter parameter = controller.GetParameter (i);
+                    UnityEngine.AnimatorControllerParameter parameter = controller.parameters[i];
 					string item = parameter.name;
-					if (parameter.type == AnimatorControllerParameterType.Bool) {
+					if (parameter.type == UnityEngine.AnimatorControllerParameterType.Bool) {
 						callback (AnimatorParameterType.Bool, item, "" + parameter.defaultBool);
-					} else if (parameter.type == AnimatorControllerParameterType.Float) {
+					} else if (parameter.type == UnityEngine.AnimatorControllerParameterType.Float) {
 						callback (AnimatorParameterType.Float, item, "" + parameter.defaultFloat);
-					} else if (parameter.type == AnimatorControllerParameterType.Int) {
+					} else if (parameter.type == UnityEngine.AnimatorControllerParameterType.Int) {
 						callback (AnimatorParameterType.Int, item, "" + parameter.defaultInt);
-					} else if (parameter.type == AnimatorControllerParameterType.Trigger) {
+					} else if (parameter.type == UnityEngine.AnimatorControllerParameterType.Trigger) {
 						callback (AnimatorParameterType.Trigger, item, "(not available)");
 					} else {
 						callback (AnimatorParameterType.Unknown, item, null);

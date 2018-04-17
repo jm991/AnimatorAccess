@@ -115,7 +115,7 @@ namespace Scio.AnimatorAccessGenerator
 				builder = new AnimatorCodeElementsBuilder (go, className, config);
 				existingAllTransitionsHash = animatorAccess.AllTransitionsHash;
 			} else {
-				Logger.Error ("Cannot access component BaseAnimatorAccess from object " + go.name);
+				CodeGeneration.Logger.Error ("Cannot access component BaseAnimatorAccess from object " + go.name);
 			}
 		}
 
@@ -139,7 +139,7 @@ namespace Scio.AnimatorAccessGenerator
 
 					string message = "";
 					comparisonResult.ForEach ((s) => message += s + "\n");
-					Logger.Debug ("Comparison between new and existing class reveals " + comparisonResult.Count + " changes: " + message);
+                    CodeGeneration.Logger.Debug ("Comparison between new and existing class reveals " + comparisonResult.Count + " changes: " + message);
 					return comparisonResult;
 				}
 			}
@@ -162,9 +162,9 @@ namespace Scio.AnimatorAccessGenerator
 				if (newClass.IsEmpty ()) {
 					return result.SetError ("No Input", "The input seems to be invalid. Check that there are any states or parameter to process.");
 				}
-				Logger.Debug ("New: " + newClass);
+                CodeGeneration.Logger.Debug ("New: " + newClass);
 				if (!existingClassBuilder.HasType ()) {
-					Logger.Info ("Generating source for " + className + " the very first time");
+                    CodeGeneration.Logger.Info ("Generating source for " + className + " the very first time");
 				}
 				try {
 					existingClassBuilder.MethodBinding = BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public | 
@@ -180,7 +180,7 @@ namespace Scio.AnimatorAccessGenerator
 						(GenericMethodCodeElement m) => m.Name == "Update" || m.Name == "FixedUpdate");
 					updateMethods.ForEach ((GenericMethodCodeElement m) => m.Obsolete = true);
 				} catch (System.Exception ex) {
-					Logger.Warning (ex.Message + "\n" + ex.StackTrace);
+                    CodeGeneration.Logger.Warning (ex.Message + "\n" + ex.StackTrace);
 					result.SetError ("Error", "Oops. An unexpected error occurred. Details" + ex.Message + "\n" + ex.StackTrace);
 				}
 			}
@@ -206,7 +206,7 @@ namespace Scio.AnimatorAccessGenerator
 					for (int i = 0; i < previousMembersCount; i++) {
 						consoleMessage += previousMembers [i].GetSignature () + "\n";
 					}
-					Logger.Info ("Members found in previous version that will be marked as obsolete: " + consoleMessage);
+                    CodeGeneration.Logger.Info ("Members found in previous version that will be marked as obsolete: " + consoleMessage);
 				}
 			}
 			return result;

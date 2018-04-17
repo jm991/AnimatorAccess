@@ -77,7 +77,7 @@ namespace Scio.AnimatorAccessGenerator
 				if (i >= 0) {
 					propName = propName.Substring (layerPrefix.Length + 1);
 				} else {
-					Logger.Warning ("Item [" + item + "] does not contain [" + layerPrefix + "] as prefix");
+                    CodeGeneration.Logger.Warning ("Item [" + item + "] does not contain [" + layerPrefix + "] as prefix");
 				}
 			}
 			return GeneratePropertyName (prefix, propName);

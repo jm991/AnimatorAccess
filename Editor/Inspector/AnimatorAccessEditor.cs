@@ -47,10 +47,10 @@ namespace Scio.AnimatorAccessGenerator
 		/// Class constructor is called after every AssetDatabase.Refresh as the whole assembly is reloaded.
 		/// </summary>
 		static AnimatorAccessEditor () {
-			string dir = "Assets/" + Manager.SharedInstance.InstallDir + InspectorIconsDir;
-			iconRemove = AssetDatabase.LoadAssetAtPath (dir + "icon_remove.png", typeof(Texture)) as Texture;
-			iconObsolete = AssetDatabase.LoadAssetAtPath (dir + "icon_obsolete.png", typeof(Texture)) as Texture;
-			iconAdd = AssetDatabase.LoadAssetAtPath (dir + "icon_add.png", typeof(Texture)) as Texture;
+			//string dir = "Assets/" + Manager.SharedInstance.InstallDir + InspectorIconsDir;
+			//iconRemove = AssetDatabase.LoadAssetAtPath (dir + "icon_remove.png", typeof(Texture)) as Texture;
+			//iconObsolete = AssetDatabase.LoadAssetAtPath (dir + "icon_obsolete.png", typeof(Texture)) as Texture;
+			//iconAdd = AssetDatabase.LoadAssetAtPath (dir + "icon_add.png", typeof(Texture)) as Texture;
 		}
 
 		/// <summary>

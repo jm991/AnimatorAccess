@@ -98,7 +98,7 @@ namespace AnimatorAccessExample
 				// only turn the player after walking
 				animator.SetInteger (rotateInt, (int)walkingDirection);
 			}
-			rigidbody.MovePosition (transform.position + speed * Vector3.right * Time.deltaTime);
+			this.GetComponent<Rigidbody>().MovePosition (transform.position + speed * Vector3.right * Time.deltaTime);
 			// if speed != 0, walking animation is triggered
 			animator.SetFloat (speedFloat, Mathf.Abs (speed));
 		}

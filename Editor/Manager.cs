@@ -60,8 +60,8 @@ namespace Scio.AnimatorAccessGenerator
 						Debug.LogWarning (ex.Message);
 					}
 					bool logLevel = Preferences.GetBool (Preferences.Key.DebugMode);
-					Logger.Set = new UnityLogger (logLevel);
-					Logger.Debug ("Install directory is: " + instance.InstallDir);
+                    CodeGeneration.Logger.Set = new UnityLogger (logLevel);
+                    CodeGeneration.Logger.Debug ("Install directory is: " + instance.InstallDir);
 				}
 				return instance;
 			}
@@ -86,7 +86,7 @@ namespace Scio.AnimatorAccessGenerator
 					WriteToFile (a.Code, "/Users/kay/tmp/TimeMachine.ignore/Trash/New.cs");
 				}
 			} else {
-				Logger.Warning (r);
+                CodeGeneration.Logger.Warning (r);
 			}
 		}
 
@@ -128,7 +128,7 @@ namespace Scio.AnimatorAccessGenerator
 					EditorStatusObserver.CheckForAutoRefresh ();
 				}
 			} else {
-				Logger.Warning (r);
+                CodeGeneration.Logger.Warning (r);
 				EditorUtility.DisplayDialog (r.ErrorTitle, r.ErrorText, "OK");
 			}
 		}
@@ -162,13 +162,13 @@ namespace Scio.AnimatorAccessGenerator
 					File.SetCreationTime (file, t);
 					File.SetLastWriteTime (file, t);
 					File.Delete (backupFile);
-					Logger.Debug ("Undo: " + file + " replaced by backup " + backupFile + " from " + t);
+                    CodeGeneration.Logger.Debug ("Undo: " + file + " replaced by backup " + backupFile + " from " + t);
 					EditorStatusObserver.CheckForAutoRefresh ();
 				} catch (System.Exception ex) {
-					Logger.Warning (ex.Message);
+                    CodeGeneration.Logger.Warning (ex.Message);
 				}
 			} else {
-				Logger.Warning ("No target file for undo found.");
+                CodeGeneration.Logger.Warning ("No target file for undo found.");
 			}
 		}
 
@@ -190,12 +190,12 @@ namespace Scio.AnimatorAccessGenerator
 			using (StreamWriter writer = new StreamWriter (file, false)) {
 				try {
 					writer.WriteLine ("{0}", code);
-					Logger.Debug ("Code written to file " + file);
+                    CodeGeneration.Logger.Debug ("Code written to file " + file);
 					return;
 				}
 				catch (System.Exception ex) {
 					string msg = " threw:\n" + ex.ToString ();
-					Logger.Error (msg);
+                    CodeGeneration.Logger.Error (msg);
 					EditorUtility.DisplayDialog ("Error on export", msg, "OK");
 				}
 			}

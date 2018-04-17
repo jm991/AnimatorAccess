@@ -57,7 +57,7 @@ namespace Scio.AnimatorAccessGenerator
 			templateDir = "";
 			TemplateConfig.TemplatePath = "";
 			string searchRoot = Path.Combine (Application.dataPath, Manager.SharedInstance.InstallDir);
-			Logger.Debug ("Searching for default template in " + searchRoot);
+            CodeGeneration.Logger.Debug ("Searching for default template in " + searchRoot);
 			string[] files = Directory.GetFiles (searchRoot, config.GetDefaultTemplateFileName (), SearchOption.AllDirectories);
 			if (files.Length == 0) {
 				// fallback, scan all directories under Assets folder
@@ -67,7 +67,7 @@ namespace Scio.AnimatorAccessGenerator
 				return result.SetError ("Template Directory Not Found", "The default template " + config.GetDefaultTemplateFileName () + "could not be found anywhere under your Assets directory.");
 			} else if (files.Length > 1) {
 				string rootDir = Path.Combine (Manager.SharedInstance.InstallDir, config.PathToTemplateDirectory);
-				Logger.Debug ("More than one default template found. Searching the best match i.e. path contains [" + rootDir + "] ");
+                CodeGeneration.Logger.Debug ("More than one default template found. Searching the best match i.e. path contains [" + rootDir + "] ");
 				foreach (string item in files) {
 					if (item.Contains (rootDir)) {
 						TemplateConfig.TemplatePath = item;
@@ -76,13 +76,13 @@ namespace Scio.AnimatorAccessGenerator
 				}
 				if (string.IsNullOrEmpty (TemplateConfig.TemplatePath)) {
 					TemplateConfig.TemplatePath = files [0];
-					Logger.Info ("More than one default template found but non of them matching the path " + rootDir);
+                    CodeGeneration.Logger.Info ("More than one default template found but non of them matching the path " + rootDir);
 				}
 			} else {
 				TemplateConfig.TemplatePath = files [0];
 			}
 			templateDir = Path.GetDirectoryName (TemplateConfig.TemplatePath);
-			Logger.Info ("Template directory found, using " + templateDir);
+            CodeGeneration.Logger.Info ("Template directory found, using " + templateDir);
 			Preferences.SetString (Preferences.Key.TemplateDir, templateDir);
 			return result;
 		}

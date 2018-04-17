@@ -72,7 +72,7 @@ namespace Scio.AnimatorAccessGenerator
 					Directory.CreateDirectory (backupDir);
 					Preferences.SetString (Preferences.Key.BackupDir, backupDir);
 				} catch (System.Exception ex) {
-					Logger.Warning (ex.Message);
+					CodeGeneration.Logger.Warning (ex.Message);
 					backupDir = "";
 				}
 			}
@@ -153,7 +153,7 @@ namespace Scio.AnimatorAccessGenerator
 				}
 				catch (System.Exception ex) {
 					string msg = " threw:\n" + ex.ToString ();
-					Logger.Error (msg);
+                    CodeGeneration.Logger.Error (msg);
 				}
 			}
 			return "";

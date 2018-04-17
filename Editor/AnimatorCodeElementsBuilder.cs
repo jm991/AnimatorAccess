@@ -303,7 +303,7 @@ namespace Scio.AnimatorAccessGenerator
 				setterMethod.Summary.Add ("Activate trigger of parameter " + item + ".");
 				setterMethod.Code.Add ("animator.SetTrigger (" + fieldName + ");");
 			} else {
-				Logger.Warning ("Could not find type for param " + item + " as it seems to be no base type.");
+                CodeGeneration.Logger.Warning ("Could not find type for param " + item + " as it seems to be no base type.");
 				return;
 			}
 			classCodeElement.Methods.Add (setterMethod);

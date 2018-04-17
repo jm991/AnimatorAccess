@@ -47,6 +47,7 @@ namespace Scio.AnimatorAccessGenerator
 	
 		static void OnEditorApplicationUpdate ()
 		{
+            /*
 			// avoid unnecessary upates (100/sec)
 			EditorApplication.update -= OnEditorApplicationUpdate;
 			string fullClassName = Preferences.GetString (Preferences.Key.PostProcessingFile);
@@ -54,6 +55,7 @@ namespace Scio.AnimatorAccessGenerator
 			if (!string.IsNullOrEmpty (fullClassName)) {
 				DisplayAddComponentDialog (fullClassName);
 			}
+            */
 		}
 	
 		public static void CheckForAutoRefresh () {
@@ -81,16 +83,16 @@ namespace Scio.AnimatorAccessGenerator
 			}
 			GameObject activeGameObject = Selection.activeGameObject;
 			if (activeGameObject == null) {
-				Logger.Debug ("No game object selected");
+                CodeGeneration.Logger.Debug ("No game object selected");
 			} else if (activeGameObject.GetComponent (t) != null) {
-				Logger.Debug (activeGameObject.name + " already has a component " + t.Name + " attached");
+                CodeGeneration.Logger.Debug (activeGameObject.name + " already has a component " + t.Name + " attached");
 			} else if (activeGameObject.GetComponent<Animator> () == null) {
-				Logger.Debug ("No animator component, skipping");
+                CodeGeneration.Logger.Debug ("No animator component, skipping");
 			} else {
 				if (EditorUtility.DisplayDialog ("Add Commponent", "Add " + className + " to " + activeGameObject.name + " ?", "Yes", "No")) {
 					Component c = activeGameObject.AddComponent (t);
 					if (c == null) {
-						Logger.Warning ("Could not add component of type " + t + ".");
+                        CodeGeneration.Logger.Warning ("Could not add component of type " + t + ".");
 					}
 				}
 			}
